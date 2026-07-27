@@ -1,0 +1,19 @@
+[Unit]
+Description=WMATA LED Arrival Sign Engine
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Must run as root for /dev/mem access
+User=root
+# Load the API keys from the local secrets file
+EnvironmentFile=/home/brandondiaz/transit-led-sign/.wmata_secrets.env
+ExecStart=/home/brandondiaz/wmata_env/bin/python /home/brandondiaz/transit-led-sign/src/main.py
+WorkingDirectory=/home/brandondiaz/transit-led-sign
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

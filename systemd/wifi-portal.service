@@ -1,0 +1,14 @@
+[Unit]
+Description=WMATA LED Sign Wi-Fi Portal
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/home/brandondiaz/wmata_env/bin/gunicorn --workers 1 --bind 0.0.0.0:80 wifi_portal.portal_server:app
+WorkingDirectory=/home/brandondiaz/transit-led-sign
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
