@@ -24,10 +24,12 @@ if [ ! -d "rpi-rgb-led-matrix" ]; then
     git clone https://github.com/hzeller/rpi-rgb-led-matrix.git
 fi
 cd rpi-rgb-led-matrix
-# Build the library and python bindings
-make build-python
-# Install python bindings system-wide so our venv can access them
-sudo make install-python
+# Build the main C++ library
+make
+# Build and install the Python bindings
+cd bindings/python
+make build-python PYTHON=$(which python3)
+sudo make install-python PYTHON=$(which python3)
 
 echo "=== Setting up Python Virtual Environment ==="
 cd ~
