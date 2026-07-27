@@ -1,6 +1,6 @@
 # WMATA LED Arrival Sign
 
-A standalone, custom-built LED arrival sign replicating the official WMATA PIDS displays, powered by a Raspberry Pi and RGB LED matrix panels.
+A standalone, custom-built LED arrival sign replicating the official [WMATA LED Arrival Sign](https://dcmetrostore.com/products/wmata-rail-led-arrival-sign), powered by a Raspberry Pi 3B+ and 2 daisy-chained RGB LED matrix panels.
 
 This project pulls real-time transit data directly from the official WMATA API, formats the predictions, and renders them in a multi-train layout similar to real Metro station platforms. It is designed to run headless as a "turn-key" appliance.
 
@@ -15,21 +15,15 @@ This project pulls real-time transit data directly from the official WMATA API, 
 
 ## Hardware Architecture
 
-1. **Controller:** Raspberry Pi 3B+ (or Pi 4). Raspberry Pi OS Lite (32-bit Bookworm) is highly recommended for maximum stability and performance.
+1. **Controller:** Raspberry Pi 3B+ on Raspberry Pi OS Lite (32-bit Bookworm) – using a legacy/lighter OS for better stability and performance.
 2. **Display Panels:** 2x 64x32 P2.5 RGB Full Color LED Matrix Panels (HUB75 interface). Daisy-chained horizontally for a 128x32 total resolution.
-3. **Interface Adapter:** A HUB75 adapter HAT (e.g., Adafruit RGB Matrix HAT or WT-RGBA Seengreat Matrix Board) connecting the Pi's 40-pin GPIO to the first panel's Data IN port.
-4. **Power Supply:** 5V / 4A power adapter. Because the matrix can draw a huge amount of current (up to 8A at full white brightness), the software limits the maximum brightness to ~40-50% to prevent Pi brownouts.
+3. **Interface Adapter:** A HUB75 adapter HAT (WT-RGBA Seengreat Matrix Board) connecting the Pi's 40-pin GPIO to the first panel's Data IN port.
+4. **Power Supply:** I'm using a 5V / 4A power adapter. This is a bit of a limiter. Because the matrix can draw a huge amount of current (up to 8A at full white brightness), the software limits the maximum brightness to ~40-50% to prevent Pi brownouts.
 
 ## Setup & Installation
 
 ### 1. API Keys & Configuration
-You must obtain a free developer API key from the [WMATA Developer Portal](https://developer.wmata.com/). 
-
-Create a file named `.wmata_secrets.env` in the root of the project directory (ensure this remains in `.gitignore`):
-
-```env
-WMATA_API_KEY=your_key_here
-```
+A free developer API key from the [WMATA Developer Portal](https://developer.wmata.com/). 
 
 ### 2. Install Dependencies
 Run the included Pi setup script. This installs necessary system packages, blacklists the onboard audio (which conflicts with the matrix DMA timings), and builds the `hzeller/rpi-rgb-led-matrix` C++ library and Python bindings.
