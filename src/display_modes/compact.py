@@ -24,11 +24,11 @@ def render(renderer, state_dict):
     renderer.draw_text(font, 128 - min_width, header_y, "RED", "MIN")
     
     if api_error:
-        renderer.draw_text(font, 36, 14, "AMBER", "API Error")
+        renderer.draw_text(font, 36, 15, "WARM_YELLOW", "API Error")
         return
         
     if not predictions:
-        renderer.draw_text(font, 36, 14, "AMBER", "No Data")
+        renderer.draw_text(font, 36, 15, "WARM_YELLOW", "No Trains")
         return
 
     # Draw up to 3 trains
