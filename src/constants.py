@@ -17,7 +17,7 @@ LINE_COLORS = {
 
 # Typography Colors
 AMBER = (255, 176, 0)
-WARM_YELLOW = (255, 240, 180)  # Cream color for standard text
+WARM_YELLOW = (255, 235, 100)  # Buttery cream color for standard text
 WHITE = (255, 255, 255)
 DARK_GRAY = (40, 40, 40)
 BLACK = (0, 0, 0)
