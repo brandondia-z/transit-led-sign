@@ -71,9 +71,8 @@ def render(renderer, state_dict):
             m_width = renderer.draw_text(font, 0, -20, min_color, min_str)
             m_width = m_width if m_width > 0 else len(min_str) * 6
             
-            # Destination (dynamically truncate to avoid hitting MIN)
-            max_dest_pixels = (128 - m_width - 4) - 36 # 4 pixels of padding
-            max_chars = max(0, max_dest_pixels // 6)
+            # Destination (statically limit to 12 chars so the text NEVER mutates as the train approaches)
+            max_chars = 12
             dest = p.destination[:max_chars] if p.destination else "Unknown"
             
             renderer.draw_text(font, 36, y, "WARM_YELLOW", dest)
