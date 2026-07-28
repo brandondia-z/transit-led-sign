@@ -12,7 +12,18 @@ def check_internet():
     except subprocess.CalledProcessError:
         return False
 
+# Keep track of our custom dnsmasq process
+dnsmasq_proc = None
+
+def stop_hotspot():
+    global dnsmasq_proc
+    if dnsmasq_proc:
+        logging.info("Stopping custom dnsmasq...")
+        dnsmasq_proc.terminate()
+        dnsmasq_proc = None
+
 def start_hotspot():
+    global dnsmasq_proc
     logging.info("Starting LED-Sign-Setup hotspot...")
     try:
         # Delete any existing profile to start fresh
@@ -27,10 +38,13 @@ def start_hotspot():
             "ssid", "LED-Sign-Setup"
         ], check=True, stdout=subprocess.DEVNULL)
         
+        # Use manual IPv4 to prevent NetworkManager from locking down DNS
         subprocess.run([
             "nmcli", "con", "modify", "LED-Sign-Setup", 
             "802-11-wireless.mode", "ap", 
-            "ipv4.method", "shared"
+            "ipv4.method", "manual",
+            "ipv4.addresses", "10.42.0.1/24",
+            "ipv4.gateway", "10.42.0.1"
         ], check=True)
         
         # Explicitly remove security just in case NetworkManager defaults to WEP/WPA
@@ -41,24 +55,43 @@ def start_hotspot():
         # Bring the hotspot up
         subprocess.run(["nmcli", "con", "up", "LED-Sign-Setup"], check=True)
         
-        logging.info("Hotspot started successfully as an OPEN network!")
+        # Kill any lingering dnsmasq processes to free port 53
+        subprocess.run(["sudo", "killall", "dnsmasq"], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+        
+        # Start our custom dnsmasq!
+        logging.info("Starting captive portal dnsmasq...")
+        dnsmasq_proc = subprocess.Popen([
+            "sudo", "dnsmasq", 
+            "--no-daemon", 
+            "--interface=wlan0", 
+            "--dhcp-range=10.42.0.10,10.42.0.250,12h", 
+            "--address=/#/10.42.0.1"
+        ])
+        
+        logging.info("Hotspot started successfully with True Captive Portal!")
     except subprocess.CalledProcessError as e:
         logging.error(f"Failed to start hotspot: {e}")
 
 def main():
-    # Wait a short bit after boot for NetworkManager to try connecting
-    logging.info("Waiting 10 seconds for normal wifi connection...")
-    time.sleep(10)
+    logging.info("WMATA Wi-Fi Manager started.")
+    time.sleep(10) # Wait for initial boot connection attempt
+    
+    was_connected = True
     
     while True:
-        if not check_internet():
-            logging.info("No internet detected! Launching hotspot.")
+        connected = check_internet()
+        
+        if not connected and was_connected:
+            logging.info("No internet detected. Starting setup hotspot...")
             start_hotspot()
-            # Sleep for a long time after starting the hotspot so we don't spam it
-            time.sleep(600)
-        else:
-            # Check every 10 seconds
-            time.sleep(10)
+            was_connected = False
+            
+        elif connected and not was_connected:
+            logging.info("Internet restored. Stopping hotspot processes...")
+            stop_hotspot()
+            was_connected = True
+            
+        time.sleep(10)
 
 if __name__ == "__main__":
     main()
