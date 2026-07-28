@@ -29,6 +29,12 @@ def create_app(state: StateManager):
             direction_group=data.get("direction_group", state.config.direction_group),
             display_mode=data.get("display_mode", state.config.display_mode)
         )
+        
+        # Trigger an instant reload of the API data with loading screen!
+        state.trigger_refresh(
+            station_name=data.get("station_name", "Station"),
+            direction_name=data.get("direction_name", "All Destinations")
+        )
         return jsonify({"status": "success"})
         
     @app.route("/api/stations", methods=["GET"])

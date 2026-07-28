@@ -61,7 +61,9 @@ class WMATAClient:
                 self.state.set_api_error(True)
                 
             # Sleep 20 seconds between API calls to respect rate limits
-            time.sleep(20)
+            # Wait can be instantly interrupted by refresh_event!
+            self.state.refresh_event.wait(20)
+            self.state.refresh_event.clear()
 
     def _fetch_predictions(self, station_codes: str) -> list[TrainPrediction]:
         url = f"{self.API_BASE}/StationPrediction.svc/json/GetPrediction/{station_codes}"

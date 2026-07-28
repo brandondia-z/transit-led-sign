@@ -65,7 +65,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     saveBtn.addEventListener('click', async () => {
         const payload = {
             station_codes: selectedStationCode,
-            direction_group: selectedDirection
+            direction_group: selectedDirection,
+            station_name: stationSelect.options[stationSelect.selectedIndex]?.text || "Station",
+            direction_name: selectedDirection === '1' ? dir1Btn.textContent : (selectedDirection === '2' ? dir2Btn.textContent : 'Both Directions')
         };
         
         saveBtn.innerText = "Saving...";

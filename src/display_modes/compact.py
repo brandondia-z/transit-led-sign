@@ -13,14 +13,27 @@ def render(renderer, state_dict):
     # y=7 using font_wmata_5x7 (Cap height 7, Ascent 7, Descent 0) uses pixels 1-7
     header_y = 7
     font = renderer.font_wmata_5x7
+    is_fetching = state_dict.get("is_fetching", False)
     
+    # Right align "MIN" (calculate off-screen first)
+    min_width = renderer.draw_text(font, 0, -20, "RED", "MIN") 
+    min_width = min_width if min_width > 0 else 18
+    
+    if is_fetching:
+        renderer.draw_text(font, 0, header_y, "RED", "UPDATING")
+        renderer.draw_text(font, 128 - min_width, header_y, "RED", "MIN")
+        
+        s_name = state_dict.get("fetching_station_name", "")[:16]
+        d_name = state_dict.get("fetching_direction_name", "")[:18]
+        
+        renderer.draw_text(font, 0, 15, "WARM_YELLOW", "Fetching trains...")
+        renderer.draw_text(font, 0, 23, "WARM_YELLOW", f"from {s_name}")
+        renderer.draw_text(font, 0, 31, "WARM_YELLOW", f"to {d_name}")
+        return
+        
     renderer.draw_text(font, 0, header_y, "RED", "LN")
     renderer.draw_text(font, 15, header_y, "RED", "CAR")
     renderer.draw_text(font, 36, header_y, "RED", "DEST")
-    
-    # Right align "MIN"
-    min_width = renderer.draw_text(font, 0, -20, "RED", "MIN") # measure off-screen
-    min_width = min_width if min_width > 0 else 18
     renderer.draw_text(font, 128 - min_width, header_y, "RED", "MIN")
     
     if api_error:
