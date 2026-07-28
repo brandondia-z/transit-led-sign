@@ -10,9 +10,9 @@ def render(renderer, state_dict):
     renderer.clear()
     
     # 1. Draw Header (Red)
-    # y=6 using font_5x7 occupies pixels 0-6 (0 top padding)
+    # y=6 using font_6x10 (Cap height 7) occupies pixels 0-6 (0 top padding)
     header_y = 6
-    font = renderer.font_5x7
+    font = renderer.font_6x10
     
     renderer.draw_text(font, 0, header_y, "RED", "LN")
     renderer.draw_text(font, 19, header_y, "RED", "CAR")
