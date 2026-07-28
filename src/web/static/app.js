@@ -268,27 +268,71 @@ document.addEventListener('DOMContentLoaded', async () => {
         return { x, y };
     }
 
-    function drawPixel(e) {
-        const { x, y } = getMousePos(e);
-        if (x >= 0 && x < 128 && y >= 0 && y < 32) {
-            // Update visual canvas
-            ctx.fillStyle = currentColor;
-            ctx.fillRect(x, y, 1, 1);
-            // Update data model
-            canvasData[y * 128 + x] = currentColor;
+    // Brush Size Selector
+    let brushSize = 1;
+    const brushBtns = document.querySelectorAll('#brushSizeSelector .segment');
+    brushBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            brushBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            brushSize = parseInt(btn.dataset.size, 10);
+        });
+    });
+
+    let lastPos = null;
+
+    function drawDot(cx, cy) {
+        // Center the brush if size is > 1
+        const offset = Math.floor(brushSize / 2);
+        for (let dy = 0; dy < brushSize; dy++) {
+            for (let dx = 0; dx < brushSize; dx++) {
+                const px = cx + dx - offset;
+                const py = cy + dy - offset;
+                if (px >= 0 && px < 128 && py >= 0 && py < 32) {
+                    ctx.fillStyle = currentColor;
+                    ctx.fillRect(px, py, 1, 1);
+                    canvasData[py * 128 + px] = currentColor;
+                }
+            }
         }
     }
 
+    function drawLine(x0, y0, x1, y1) {
+        const dx = Math.abs(x1 - x0);
+        const dy = Math.abs(y1 - y0);
+        const sx = (x0 < x1) ? 1 : -1;
+        const sy = (y0 < y1) ? 1 : -1;
+        let err = dx - dy;
+
+        while (true) {
+            drawDot(x0, y0);
+            if (x0 === x1 && y0 === y1) break;
+            const e2 = 2 * err;
+            if (e2 > -dy) { err -= dy; x0 += sx; }
+            if (e2 < dx) { err += dx; y0 += sy; }
+        }
+    }
+
+    function drawPixel(e) {
+        const { x, y } = getMousePos(e);
+        if (lastPos) {
+            drawLine(lastPos.x, lastPos.y, x, y);
+        } else {
+            drawDot(x, y);
+        }
+        lastPos = { x, y };
+    }
+
     // Mouse Events
-    ledCanvas.addEventListener('mousedown', (e) => { isDrawing = true; drawPixel(e); });
+    ledCanvas.addEventListener('mousedown', (e) => { isDrawing = true; lastPos = null; drawPixel(e); });
     ledCanvas.addEventListener('mousemove', (e) => { if (isDrawing) drawPixel(e); });
-    ledCanvas.addEventListener('mouseup', () => { isDrawing = false; });
-    ledCanvas.addEventListener('mouseleave', () => { isDrawing = false; });
+    ledCanvas.addEventListener('mouseup', () => { isDrawing = false; lastPos = null; });
+    ledCanvas.addEventListener('mouseleave', () => { isDrawing = false; lastPos = null; });
 
     // Touch Events (prevent scrolling while drawing)
-    ledCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); isDrawing = true; drawPixel(e); }, {passive: false});
+    ledCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); isDrawing = true; lastPos = null; drawPixel(e); }, {passive: false});
     ledCanvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (isDrawing) drawPixel(e); }, {passive: false});
-    ledCanvas.addEventListener('touchend', (e) => { e.preventDefault(); isDrawing = false; });
+    ledCanvas.addEventListener('touchend', (e) => { e.preventDefault(); isDrawing = false; lastPos = null; });
 
     // Color Palette
     const colorBtns = document.querySelectorAll('.color-btn');

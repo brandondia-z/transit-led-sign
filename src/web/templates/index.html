@@ -26,6 +26,16 @@
                 </div>
             </div>
 
+            <!-- Brightness (Global) -->
+            <div class="form-group" style="margin-top: 10px;">
+                <label>BRIGHTNESS <span id="brightnessVal" class="brightness-val">100%</span></label>
+                <div class="brightness-control">
+                    <button class="bright-btn" id="brightDownBtn">-</button>
+                    <input type="range" id="brightnessSlider" min="1" max="100" value="100">
+                    <button class="bright-btn" id="brightUpBtn">+</button>
+                </div>
+            </div>
+
             <!-- TRANSIT MODE CONTENT -->
             <div id="transitSection">
                 <!-- Line Selector -->
@@ -58,15 +68,7 @@
                 </div>
             </div>
             
-            <!-- Brightness -->
-            <div class="form-group" style="margin-top: 10px;">
-                <label>BRIGHTNESS <span id="brightnessVal" class="brightness-val">100%</span></label>
-                <div class="brightness-control">
-                    <button class="bright-btn" id="brightDownBtn">-</button>
-                    <input type="range" id="brightnessSlider" min="1" max="100" value="100">
-                    <button class="bright-btn" id="brightUpBtn">+</button>
-                </div>
-            </div>
+            <!-- Brightness was moved up to be global -->
             
             </div> <!-- End Transit Section -->
 
@@ -76,16 +78,25 @@
                     <canvas id="ledCanvas" width="128" height="32" style="width: 100%; aspect-ratio: 4/1; image-rendering: pixelated; border: 1px solid #333; touch-action: none; background: #000;"></canvas>
                 </div>
                 
+                <div class="form-group" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; align-items: center;">
+                    <label style="margin: 0; padding-right: 10px;">BRUSH SIZE:</label>
+                    <div class="segmented-control" id="brushSizeSelector" style="width: auto;">
+                        <button class="segment active" data-size="1">1px</button>
+                        <button class="segment" data-size="2">2px</button>
+                        <button class="segment" data-size="4">4px</button>
+                    </div>
+                </div>
+                
                 <div class="color-palette" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
-                    <button class="color-btn" style="background: #E51636;" data-color="#E51636"></button>
-                    <button class="color-btn" style="background: #F68712;" data-color="#F68712"></button>
-                    <button class="color-btn" style="background: #FCD006;" data-color="#FCD006"></button>
-                    <button class="color-btn" style="background: #0FAB4B;" data-color="#0FAB4B"></button>
-                    <button class="color-btn" style="background: #1574C4;" data-color="#1574C4"></button>
-                    <button class="color-btn" style="background: #A2AAAD;" data-color="#A2AAAD"></button>
-                    <button class="color-btn" style="background: #FFFFFF;" data-color="#FFFFFF"></button>
-                    <input type="color" id="customColorPicker" value="#00FFFF" style="width: 32px; height: 32px; padding: 0; border: none; border-radius: 50%; cursor: pointer;">
-                    <button class="color-btn" style="background: #000000; border: 1px solid #666; color: white; font-size: 10px;" data-color="#000000">ERA</button>
+                    <button class="color-btn" style="background: #E51636; width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 0; cursor: pointer;" data-color="#E51636"></button>
+                    <button class="color-btn" style="background: #F68712; width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 0; cursor: pointer;" data-color="#F68712"></button>
+                    <button class="color-btn" style="background: #FCD006; width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 0; cursor: pointer;" data-color="#FCD006"></button>
+                    <button class="color-btn" style="background: #0FAB4B; width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 0; cursor: pointer;" data-color="#0FAB4B"></button>
+                    <button class="color-btn" style="background: #1574C4; width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 0; cursor: pointer;" data-color="#1574C4"></button>
+                    <button class="color-btn" style="background: #A2AAAD; width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 0; cursor: pointer;" data-color="#A2AAAD"></button>
+                    <button class="color-btn" style="background: #FFFFFF; width: 32px; height: 32px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 0; cursor: pointer;" data-color="#FFFFFF"></button>
+                    <input type="color" id="customColorPicker" value="#00FFFF" style="width: 32px; height: 32px; padding: 0; border: 2px solid white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3); cursor: pointer;">
+                    <button class="color-btn" style="background: #000000; width: 32px; height: 32px; border-radius: 50%; border: 2px solid #aaa; color: white; font-size: 10px; font-weight: bold; padding: 0; cursor: pointer;" data-color="#000000">ER</button>
                 </div>
                 
                 <div style="display: flex; gap: 10px; justify-content: center;">
