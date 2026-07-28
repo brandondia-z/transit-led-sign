@@ -1,0 +1,16 @@
+[Unit]
+Description=WMATA LED Sign WiFi Setup
+After=NetworkManager.service
+Wants=NetworkManager.service
+
+[Service]
+Type=oneshot
+# Ensure NetworkManager is fully up before checking
+ExecStartPre=/bin/sleep 5
+# Start wifi-connect and host the WMATA-Sign-Setup portal.
+# If internet is already available, wifi-connect exits instantly.
+ExecStart=/usr/local/sbin/wifi-connect --portal-ssid "WMATA-Sign-Setup"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
