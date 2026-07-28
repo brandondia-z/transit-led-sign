@@ -10,8 +10,8 @@ def render(renderer, state_dict):
     renderer.clear()
     
     # 1. Draw Header (Red)
-    # y=6 using font_wmata_5x7 (Cap height 7, Ascent 7, Descent 0) uses pixels 0-6
-    header_y = 6
+    # y=7 using font_wmata_5x7 (Cap height 7, Ascent 7, Descent 0) uses pixels 1-7
+    header_y = 7
     font = renderer.font_wmata_5x7
     
     renderer.draw_text(font, 0, header_y, "RED", "LN")
@@ -33,8 +33,8 @@ def render(renderer, state_dict):
 
     # Draw up to 3 trains
     for i in range(3):
-        # Rows at y=14, 22, 30 (Leaves exactly 1 pixel gap between rows)
-        y = 14 + (i * 8)
+        # Rows at y=15, 23, 31 (Leaves exactly 1 pixel gap between rows)
+        y = 15 + (i * 8)
         
         if i < len(predictions):
             p = predictions[i]
