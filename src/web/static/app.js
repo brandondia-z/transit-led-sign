@@ -49,8 +49,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // 2. Setup Event Listeners
+    const brightDownBtn = document.getElementById('brightDownBtn');
+    const brightUpBtn = document.getElementById('brightUpBtn');
+
+    function updateBrightness(val) {
+        let newVal = Math.max(1, Math.min(100, val));
+        brightnessSlider.value = newVal;
+        brightnessVal.textContent = `${newVal}%`;
+    }
+
     brightnessSlider.addEventListener('input', (e) => {
-        brightnessVal.textContent = `${e.target.value}%`;
+        updateBrightness(parseInt(e.target.value, 10));
+    });
+
+    brightDownBtn.addEventListener('click', () => {
+        updateBrightness(parseInt(brightnessSlider.value, 10) - 5);
+    });
+
+    brightUpBtn.addEventListener('click', () => {
+        updateBrightness(parseInt(brightnessSlider.value, 10) + 5);
     });
 
     lineBtns.forEach(btn => {
