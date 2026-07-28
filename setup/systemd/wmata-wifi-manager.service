@@ -1,0 +1,15 @@
+[Unit]
+Description=WMATA Sign Wi-Fi Hotspot Manager
+After=network.target NetworkManager.service
+Requires=NetworkManager.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/brandondiaz/transit-led-sign
+ExecStart=/home/brandondiaz/wmata_env/bin/python3 src/wifi_manager.py
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

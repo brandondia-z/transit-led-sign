@@ -83,4 +83,35 @@ def create_app(state: StateManager):
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
+    @app.route("/wifi", methods=["GET"])
+    def wifi_page():
+        return render_template("wifi.html")
+        
+    @app.route("/api/wifi/scan", methods=["GET"])
+    def scan_wifi():
+        import subprocess
+        try:
+            output = subprocess.check_output(["nmcli", "-t", "-f", "SSID", "dev", "wifi", "list"]).decode("utf-8")
+            ssids = list(set([line.strip() for line in output.split('\n') if line.strip()]))
+            # Remove empty ssids or the hotspot itself
+            ssids = [s for s in ssids if s and s != "WMATA-Sign-Setup"]
+            return jsonify(ssids)
+        except Exception as e:
+            return jsonify([])
+
+    @app.route("/api/wifi/connect", methods=["POST"])
+    def connect_wifi():
+        import subprocess
+        data = request.json
+        ssid = data.get("ssid")
+        password = data.get("password")
+        
+        try:
+            # We must use Popen to not block the response while network drops
+            cmd = f"sudo nmcli device wifi connect '{ssid}' password '{password}'"
+            subprocess.Popen(cmd, shell=True)
+            return jsonify({"status": "connecting"})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
     return app

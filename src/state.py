@@ -14,6 +14,7 @@ class StateManager:
         # UI Fetching States
         self.refresh_event = threading.Event()
         self.is_fetching = False
+        self.fetch_start_time = 0.0
         self.fetching_station_name = ""
         self.fetching_direction_name = ""
         
@@ -42,23 +43,30 @@ class StateManager:
             self.config.save_to_json()
                     
     def trigger_refresh(self, station_name: str, direction_name: str):
+        import time
         with self._lock:
             self.fetching_station_name = station_name
             self.fetching_direction_name = direction_name
             self.is_fetching = True
-            self.predictions = [] # Clear the board!
+            self.fetch_start_time = time.time()
+            # Do NOT clear the board predictions! Let them show stale data until the new fetch completes
+            # This prevents the screen from blanking if the fetch takes <1s
         self.refresh_event.set()
         
     def get_state_snapshot(self):
+        import time
         with self._lock:
+            # Only show the fetching screen if we've been fetching for more than 1.0 seconds
+            show_fetching = self.is_fetching and (time.time() - self.fetch_start_time > 1.0)
+            
             # Return a shallow copy of lists so the renderer can iterate safely
             return {
                 "config": self.config,
-                "predictions": list(self.predictions),
+                "predictions": list(self.predictions) if not show_fetching else [],
                 "alerts": list(self.alerts),
                 "api_error": self.api_error,
                 "has_connected_once": self.has_connected_once,
-                "is_fetching": self.is_fetching,
+                "is_fetching": show_fetching,
                 "fetching_station_name": self.fetching_station_name,
                 "fetching_direction_name": self.fetching_direction_name
             }

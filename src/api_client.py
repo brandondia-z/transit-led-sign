@@ -10,6 +10,7 @@ class WMATAClient:
     
     DESTINATION_MAP = {
         "New Crlton": "N Carrollton",
+        "NewCrlton": "N Carrollton",
         "NEW CARROLLTON": "N Carrollton",
         "Hntingtn": "Huntington",
         "Branch Av": "Branch Ave",
@@ -29,7 +30,8 @@ class WMATAClient:
         "N Bthesda": "N Bethesda",
         "NORTH BETHESDA": "N Bethesda",
         "Vienna": "Vienna",
-        "ssenger": "No Passenger"
+        "ssenger": "No Passenger",
+        "LastTrain": "Last Train"
     }
     
     def __init__(self, state: StateManager):

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMATA Sign Wi-Fi Setup</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .wifi-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #111;
+            border-radius: 6px;
+            border: 1px solid #2a2a2a;
+            padding: 8px;
+        }
+        .wifi-item {
+            padding: 12px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+        .wifi-item:hover, .wifi-item.selected {
+            background: #2a2a2a;
+        }
+        .wifi-item.selected {
+            border-left: 3px solid #64D2C9;
+        }
+        input[type="password"] {
+            width: 100%;
+            padding: 14px;
+            background: #111;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            color: white;
+            font-size: 15px;
+            margin-top: 10px;
+        }
+        .loading {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="accordion-header">
+            <span>WI-FI SETUP</span>
+        </div>
+
+        <div class="accordion-content">
+            <p style="font-size: 13px; color: #aaa;">Select your home network and enter the password.</p>
+            
+            <div id="wifiList" class="wifi-list">
+                <div class="loading">Scanning for networks...</div>
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <label>PASSWORD</label>
+                <input type="password" id="wifiPassword" placeholder="Enter network password">
+            </div>
+
+            <button class="save-btn" id="connectBtn" disabled>Connect to Wi-Fi</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedSsid = null;
+        const wifiList = document.getElementById('wifiList');
+        const connectBtn = document.getElementById('connectBtn');
+        const passwordInput = document.getElementById('wifiPassword');
+
+        // Fetch networks
+        fetch('/api/wifi/scan')
+            .then(res => res.json())
+            .then(networks => {
+                wifiList.innerHTML = '';
+                if (networks.length === 0) {
+                    wifiList.innerHTML = '<div class="loading">No networks found. Refresh the page.</div>';
+                    return;
+                }
+                networks.forEach(ssid => {
+                    const div = document.createElement('div');
+                    div.className = 'wifi-item';
+                    div.textContent = ssid;
+                    div.onclick = () => {
+                        document.querySelectorAll('.wifi-item').forEach(el => el.classList.remove('selected'));
+                        div.classList.add('selected');
+                        selectedSsid = ssid;
+                        connectBtn.disabled = false;
+                    };
+                    wifiList.appendChild(div);
+                });
+            })
+            .catch(err => {
+                wifiList.innerHTML = '<div class="loading">Failed to scan networks.</div>';
+            });
+
+        connectBtn.onclick = () => {
+            if (!selectedSsid) return;
+            const password = passwordInput.value;
+            connectBtn.textContent = 'Connecting...';
+            connectBtn.disabled = true;
+
+            fetch('/api/wifi/connect', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ssid: selectedSsid, password: password })
+            }).then(() => {
+                alert("Credentials applied! If successful, this hotspot will disconnect shortly and the LED sign will come online. If it fails, the hotspot will remain up.");
+                connectBtn.textContent = 'Credentials Sent';
+            }).catch(err => {
+                alert("Error sending credentials.");
+                connectBtn.textContent = 'Connect to Wi-Fi';
+                connectBtn.disabled = false;
+            });
+        };
+    </script>
+</body>
+</html>
