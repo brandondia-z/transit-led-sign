@@ -10,7 +10,26 @@ class WMATAClient:
     
     DESTINATION_MAP = {
         "New Crlton": "N Carrollton",
-        # Add more physical sign abbreviation mappings here as needed
+        "NEW CARROLLTON": "N Carrollton",
+        "Hntingtn": "Huntington",
+        "Branch Av": "Branch Ave",
+        "Frndshp Hts": "Friendship Ht",
+        "FRIENDSHIP HGTS": "Friendship Ht",
+        "Silvr Sprg": "Silver Sprg",
+        "Grnbelt": "Greenbelt",
+        "GREENBELT": "Greenbelt",
+        "Shady Grv": "Shady Grove",
+        "Wiehle-Rstn": "Wiehle-Restn",
+        "Downtwn Lrgo": "Dwntwn Largo",
+        "Largo": "Dwntwn Largo",
+        "LARGO": "Dwntwn Largo",
+        "ASHBURN": "Ashburn",
+        "FRAN/SPRING": "Franconia",
+        "Franconia": "Franconia",
+        "N Bthesda": "N Bethesda",
+        "NORTH BETHESDA": "N Bethesda",
+        "Vienna": "Vienna",
+        "ssenger": "No Passenger"
     }
     
     def __init__(self, state: StateManager):

@@ -1,7 +1,8 @@
 [Unit]
 Description=WMATA LED Arrival Sign Engine
-After=network-online.target
-Wants=network-online.target
+# Removing network-online.target drastically speeds up boot time.
+# The script has internal error handling to wait for Wi-Fi to connect.
+After=network.target
 
 [Service]
 Type=simple
@@ -9,7 +10,7 @@ Type=simple
 User=root
 # Load the API keys from the local secrets file
 EnvironmentFile=/home/brandondiaz/transit-led-sign/.wmata_secrets.env
-ExecStart=/home/brandondiaz/wmata_env/bin/python /home/brandondiaz/transit-led-sign/src/main.py
+ExecStart=/home/brandondiaz/wmata_env/bin/python -m src.main
 WorkingDirectory=/home/brandondiaz/transit-led-sign
 Restart=always
 RestartSec=10
