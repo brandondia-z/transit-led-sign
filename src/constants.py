@@ -17,12 +17,12 @@ LINE_COLORS = {
 
 # Typography Colors
 AMBER = (255, 176, 0)
-WARM_YELLOW = (255, 210, 50)  # Lightbulb yellow for standard text
+WARM_YELLOW = (255, 240, 180)  # Cream color for standard text
 WHITE = (255, 255, 255)
 DARK_GRAY = (40, 40, 40)
 BLACK = (0, 0, 0)
 RED = (180, 0, 0) # Dimmer red for headers to distinguish from the brighter Red Line color
-GREEN = (150, 255, 50) # Softer, yellowish lime-green (less Luigi)
+GREEN = (0, 255, 120) # Turquoise/teal that leans green
 CYAN = (0, 255, 255)
 MAGENTA = (255, 0, 255)
 
