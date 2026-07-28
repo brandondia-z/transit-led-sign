@@ -2,7 +2,7 @@
 Description=WMATA LED Arrival Sign Engine
 # Removing network-online.target drastically speeds up boot time.
 # The script has internal error handling to wait for Wi-Fi to connect.
-After=network.target
+After=network.target wmata-wifi-setup.service
 
 [Service]
 Type=simple

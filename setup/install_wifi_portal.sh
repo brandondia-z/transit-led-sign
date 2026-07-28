@@ -1,11 +1,13 @@
 #!/bin/bash
 # setup/install_wifi_portal.sh
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+
 echo "Installing balena-wifi-connect..."
-curl -sL https://github.com/balena-os/wifi-connect/raw/master/scripts/Install.sh | bash
+bash <(curl -L https://github.com/balena-io/wifi-connect/raw/master/scripts/raspbian-install.sh)
 
 echo "Installing systemd service..."
-sudo cp systemd/wmata-wifi-setup.service /etc/systemd/system/
+sudo cp "$SCRIPT_DIR/systemd/wmata-wifi-setup.service" /etc/systemd/system/
 
 echo "Enabling wmata-wifi-setup.service on boot..."
 sudo systemctl daemon-reload
