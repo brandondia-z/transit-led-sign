@@ -12,7 +12,7 @@ except ImportError:
             def __init__(self): self.height = 0
             def LoadFont(self, path): pass
 
-from src.constants import FONTS_DIR, LINE_COLORS, AMBER, WHITE, DARK_GRAY, BLACK
+from src.constants import FONTS_DIR, LINE_COLORS, AMBER, WHITE, DARK_GRAY, BLACK, RED
 
 class Renderer:
     def __init__(self, config):
@@ -47,7 +47,8 @@ class Renderer:
             "AMBER": self._make_color(*AMBER),
             "WHITE": self._make_color(*WHITE),
             "DARK_GRAY": self._make_color(*DARK_GRAY),
-            "BLACK": self._make_color(*BLACK)
+            "BLACK": self._make_color(*BLACK),
+            "RED": self._make_color(*RED)
         }
         
         for line, rgb in LINE_COLORS.items():

@@ -18,6 +18,7 @@ AMBER = (255, 176, 0)
 WHITE = (255, 255, 255)
 DARK_GRAY = (40, 40, 40)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 
 # Paths
 FONTS_DIR = "/home/brandondiaz/rpi-rgb-led-matrix/fonts"

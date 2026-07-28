@@ -2,53 +2,66 @@ import time
 
 def render(renderer, state_dict):
     """
-    Renders 3 trains (compact mode).
-    Takes a renderer instance and a snapshot of the current state.
+    Renders 3 trains in the authentic WMATA PIDS layout (128x32).
     """
     predictions = state_dict.get("predictions", [])
-    alerts = state_dict.get("alerts", [])
     api_error = state_dict.get("api_error", False)
     
     renderer.clear()
     
+    # 1. Draw Header (Red)
+    # y=7 using font_5x8 fits the top 8 pixels of the 32px height
+    header_y = 7
+    font = renderer.font_5x8
+    
+    renderer.draw_text(font, 0, header_y, "RED", "LN")
+    renderer.draw_text(font, 19, header_y, "RED", "CAR")
+    renderer.draw_text(font, 38, header_y, "RED", "DEST")
+    
+    # Right align "MIN"
+    min_width = renderer.draw_text(font, 0, -20, "RED", "MIN") # measure off-screen
+    min_width = min_width if min_width > 0 else 18
+    renderer.draw_text(font, 128 - min_width, header_y, "RED", "MIN")
+    
     if api_error:
-        renderer.draw_text(renderer.font_6x10, 30, 20, "AMBER", "API Error")
+        renderer.draw_text(font, 38, 15, "AMBER", "API Error")
         return
         
     if not predictions:
-        renderer.draw_text(renderer.font_6x10, 35, 20, "AMBER", "No Data")
+        renderer.draw_text(font, 38, 15, "AMBER", "No Data")
         return
 
     # Draw up to 3 trains
     for i in range(3):
-        y_offset = i * 11
+        # Rows at y=15, 23, 31
+        y = 15 + (i * 8)
         
-        # Separator line above train 2 and 3
-        if i > 0:
-            renderer.draw_line(0, y_offset - 1, 127, y_offset - 1, "DARK_GRAY")
-            
         if i < len(predictions):
             p = predictions[i]
             
-            # Draw line color badge (4x4 square)
+            # Line Abbreviation (e.g., "RD", "OR") natively colored
             color_key = f"LINE_{p.line}" if p.line else "WHITE"
-            renderer.draw_rect(0, y_offset + 3, 4, 4, color_key)
+            line_str = p.line if p.line else "--"
+            renderer.draw_text(font, 0, y, color_key, line_str)
             
-            # Draw destination
-            renderer.draw_text(renderer.font_5x8, 8, y_offset + 8, "AMBER", p.destination[:13])
+            # Car count
+            car_str = str(p.car_count) if p.car_count else "-"
+            # Center the car count under "CAR"
+            renderer.draw_text(font, 22, y, "AMBER", car_str)
             
-            # Draw minutes / status
-            # Blink ARR and BRD every 500ms
+            # Destination (up to 14 chars to avoid hitting MIN)
+            dest = p.destination[:14] if p.destination else "Unknown"
+            renderer.draw_text(font, 38, y, "AMBER", dest)
+            
+            # Minutes / Status
             blink_on = int(time.time() * 2) % 2 == 0
-            if p.minutes in ["ARR", "BRD"]:
-                if blink_on:
-                    renderer.draw_text(renderer.font_5x8, 108, y_offset + 8, "WHITE", p.minutes)
-            else:
-                # E.g. "5 min" or just "5"
-                text = f"{p.minutes}" if p.minutes == "---" else f"{p.minutes}m"
-                renderer.draw_text(renderer.font_5x8, 108, y_offset + 8, "WHITE", text)
-        else:
-            # Empty slot
-            renderer.draw_text(renderer.font_5x8, 8, y_offset + 8, "DARK_GRAY", "---")
-
-    # If there are alerts, we could draw a marquee over the 3rd row, but for V1 let's stick to 3 trains.
+            min_str = p.minutes if p.minutes else "---"
+            
+            # Flash ARR and BRD
+            if min_str in ["ARR", "BRD"] and not blink_on:
+                continue
+            
+            # Draw right-aligned minutes
+            m_width = renderer.draw_text(font, 0, -20, "WHITE", min_str)
+            m_width = m_width if m_width > 0 else len(min_str) * 6
+            renderer.draw_text(font, 128 - m_width, y, "WHITE", min_str)
