@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect
 from src.state import StateManager
 
 def create_app(state: StateManager):
@@ -82,6 +82,15 @@ def create_app(state: StateManager):
             return jsonify(lines_cache)
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+
+    @app.before_request
+    def intercept_captive_portal():
+        # If the request is meant for Apple/Android captive portal checks
+        # The Host header won't be our IP or local hostname
+        host = request.host.split(':')[0]
+        if host not in ["10.42.0.1", "led-sign.local", "localhost", "127.0.0.1"]:
+            # Redirect to the wifi page!
+            return redirect("http://10.42.0.1/wifi")
 
     @app.route("/wifi", methods=["GET"])
     def wifi_page():

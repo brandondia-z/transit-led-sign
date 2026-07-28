@@ -10,6 +10,10 @@ sudo rm -f /etc/systemd/system/wmata-wifi-setup.service
 sudo rm -f /usr/local/sbin/wifi-connect
 sudo rm -rf /usr/local/share/wifi-connect
 
+echo "Setting up NetworkManager captive portal DNS..."
+sudo mkdir -p /etc/NetworkManager/dnsmasq-shared.d/
+echo "address=/#/10.42.0.1" | sudo tee /etc/NetworkManager/dnsmasq-shared.d/captive_portal.conf > /dev/null
+
 echo "Installing custom WMATA Wi-Fi Manager systemd service..."
 sudo cp "$SCRIPT_DIR/systemd/wmata-wifi-manager.service" /etc/systemd/system/
 
