@@ -24,7 +24,10 @@ def render(renderer, state_dict):
     renderer.draw_text(font, 128 - min_width, header_y, "RED", "MIN")
     
     if api_error:
-        renderer.draw_text(font, 36, 15, "WARM_YELLOW", "API Error")
+        if not state_dict.get("has_connected_once", False):
+            renderer.draw_text(font, 25, 15, "WARM_YELLOW", "Connecting...")
+        else:
+            renderer.draw_text(font, 36, 15, "WARM_YELLOW", "API Error")
         return
         
     if not predictions:

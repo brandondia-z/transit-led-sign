@@ -9,6 +9,7 @@ class StateManager:
         self.predictions: list[TrainPrediction] = []
         self.alerts: list[Alert] = []
         self.api_error: bool = False
+        self.has_connected_once: bool = False
         
     def update_predictions(self, predictions: list[TrainPrediction], alerts: list[Alert] = None):
         with self._lock:
@@ -16,6 +17,7 @@ class StateManager:
             if alerts is not None:
                 self.alerts = alerts
             self.api_error = False
+            self.has_connected_once = True
             
     def set_api_error(self, is_error: bool):
         with self._lock:
@@ -34,5 +36,6 @@ class StateManager:
                 "config": self.config,
                 "predictions": list(self.predictions),
                 "alerts": list(self.alerts),
-                "api_error": self.api_error
+                "api_error": self.api_error,
+                "has_connected_once": self.has_connected_once
             }
