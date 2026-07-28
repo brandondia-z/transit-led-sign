@@ -190,7 +190,13 @@
         function showSuccess() {
             setupContent.style.display = 'none';
             successContent.style.display = 'flex';
+            successMsg.innerHTML = 'Success! The sign is now online.<br><br>Redirecting you to the control panel...';
             successMsg.style.display = 'block';
+            
+            // Wait 4 seconds for the phone to reconnect to the home Wi-Fi, then redirect
+            setTimeout(() => {
+                window.location.href = "http://led-sign.local";
+            }, 4000);
         }
     </script>
 </body>
