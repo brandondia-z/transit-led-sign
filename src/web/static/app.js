@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const toast = document.getElementById('toast');
     const dir1Btn = document.getElementById('dir1Btn');
     const dir2Btn = document.getElementById('dir2Btn');
+    const brightnessSlider = document.getElementById('brightnessSlider');
+    const brightnessVal = document.getElementById('brightnessVal');
 
     // 1. Fetch initial data
     try {
@@ -29,6 +31,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Initial UI State setup based on config
         selectedStationCode = currentConfig.station_codes;
         selectedDirection = currentConfig.direction_group;
+        brightnessSlider.value = currentConfig.brightness || 60;
+        brightnessVal.textContent = `${brightnessSlider.value}%`;
 
         // Try to deduce selected line from station code
         const currentStation = allStations.find(s => s.Code === selectedStationCode);
@@ -45,6 +49,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // 2. Setup Event Listeners
+    brightnessSlider.addEventListener('input', (e) => {
+        brightnessVal.textContent = `${e.target.value}%`;
+    });
+
     lineBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             selectLine(btn.dataset.line);
@@ -67,7 +75,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             station_codes: selectedStationCode,
             direction_group: selectedDirection,
             station_name: stationSelect.options[stationSelect.selectedIndex]?.text || "Station",
-            direction_name: selectedDirection === '1' ? dir1Btn.textContent : (selectedDirection === '2' ? dir2Btn.textContent : 'Both Directions')
+            direction_name: selectedDirection === '1' ? dir1Btn.textContent : (selectedDirection === '2' ? dir2Btn.textContent : 'Both Directions'),
+            brightness: parseInt(brightnessSlider.value, 10)
         };
         
         saveBtn.innerText = "Saving...";

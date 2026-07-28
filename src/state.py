@@ -34,7 +34,12 @@ class StateManager:
         with self._lock:
             for k, v in kwargs.items():
                 if hasattr(self.config, k):
-                    setattr(self.config, k, v)
+                    # Only convert to int if it's brightness
+                    if k == "brightness":
+                        setattr(self.config, k, int(v))
+                    else:
+                        setattr(self.config, k, v)
+            self.config.save_to_json()
                     
     def trigger_refresh(self, station_name: str, direction_name: str):
         with self._lock:

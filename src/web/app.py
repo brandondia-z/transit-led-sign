@@ -18,7 +18,8 @@ def create_app(state: StateManager):
         return jsonify({
             "station_codes": state.config.station_codes,
             "direction_group": state.config.direction_group,
-            "display_mode": state.config.display_mode
+            "display_mode": state.config.display_mode,
+            "brightness": state.config.brightness
         })
         
     @app.route("/api/config", methods=["POST"])
@@ -27,7 +28,8 @@ def create_app(state: StateManager):
         state.update_config(
             station_codes=data.get("station_codes", state.config.station_codes),
             direction_group=data.get("direction_group", state.config.direction_group),
-            display_mode=data.get("display_mode", state.config.display_mode)
+            display_mode=data.get("display_mode", state.config.display_mode),
+            brightness=data.get("brightness", state.config.brightness)
         )
         
         # Trigger an instant reload of the API data with loading screen!

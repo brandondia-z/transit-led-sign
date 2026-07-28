@@ -35,6 +35,12 @@ class MainEngine:
         try:
             while self.running:
                 state_snapshot = self.state.get_state_snapshot()
+                
+                # Apply dynamic brightness from UI instantly!
+                config_brightness = state_snapshot["config"].brightness
+                if self.renderer.matrix and self.renderer.matrix.brightness != config_brightness:
+                    self.renderer.matrix.brightness = config_brightness
+
                 mode = state_snapshot["config"].display_mode
                 
                 if mode == "transit":
