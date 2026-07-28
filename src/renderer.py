@@ -29,6 +29,7 @@ class Renderer:
             options.brightness = config.brightness
             options.pwm_bits = 11
             options.drop_privileges = False
+            options.led_rgb_sequence = "RBG" # Fix for panels where Blue and Green are swapped!
             
             self.matrix = RGBMatrix(options=options)
             self.canvas = self.matrix.CreateFrameCanvas()

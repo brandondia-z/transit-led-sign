@@ -4,15 +4,15 @@ import os
 DISPLAY_WIDTH = 128
 DISPLAY_HEIGHT = 32
 
-# WMATA Official Line Colors (Hardware Optimized for LED Panels)
+# WMATA Official Line Colors (RGB Tuples)
 LINE_COLORS = {
-    "RD": (255, 0, 0),        # Pure Red
-    "BL": (50, 150, 255),     # Brighter Blue
-    "OR": (255, 128, 0),      # Pure Orange (no blue to prevent pinkish hue)
-    "GR": (0, 255, 0),        # Pure Green
-    "YL": (255, 255, 0),      # Pure Yellow
-    "SV": (150, 200, 255),    # Light Blue/Silver
-    "No": (40, 40, 40)        # Used for non-revenue trains
+    "RD": (229, 22, 54),
+    "BL": (21, 116, 196),
+    "OR": (246, 135, 18),
+    "GR": (15, 171, 75),
+    "YL": (252, 208, 6),
+    "SV": (162, 170, 173),
+    "No": (40, 40, 40) # Used for non-revenue trains
 }
 
 # Typography Colors
@@ -21,7 +21,7 @@ WARM_YELLOW = (255, 210, 50)  # Lightbulb yellow for standard text
 WHITE = (255, 255, 255)
 DARK_GRAY = (40, 40, 40)
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
+RED = (180, 0, 0) # Dimmer red for headers to distinguish from the brighter Red Line color
 GREEN = (0, 255, 0)
 
 # Paths
