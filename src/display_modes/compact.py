@@ -44,9 +44,14 @@ def render(renderer, state_dict):
             line_str = p.line if p.line else "--"
             renderer.draw_text(font, 0, y, color_key, line_str)
             
-            # Car count (8-car trains are GREEN, others are WARM_YELLOW)
+            # Car count (8-car trains are GREEN, 6-car are CYAN, others are WARM_YELLOW)
             car_str = str(p.car_count) if p.car_count else "-"
-            car_color = "GREEN" if car_str == "8" else "WARM_YELLOW"
+            if car_str == "8":
+                car_color = "GREEN"
+            elif car_str == "6":
+                car_color = "CYAN"
+            else:
+                car_color = "WARM_YELLOW"
             renderer.draw_text(font, 18, y, car_color, car_str)
             
             # Minutes / Status (BRD/ARR are WHITE, others are WARM_YELLOW)
