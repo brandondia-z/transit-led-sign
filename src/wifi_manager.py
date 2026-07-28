@@ -13,14 +13,13 @@ def check_internet():
         return False
 
 def start_hotspot():
-    logging.info("Starting WMATA-Sign-Setup hotspot...")
+    logging.info("Starting LED-Sign-Setup hotspot...")
     try:
         # nmcli automatically handles dhcp and dnsmasq for shared hotspots
         subprocess.run([
             "nmcli", "device", "wifi", "hotspot", 
             "ifname", "wlan0", 
-            "ssid", "WMATA-Sign-Setup", 
-            "password", "transit123"
+            "ssid", "LED-Sign-Setup"
         ], check=True)
         logging.info("Hotspot started successfully!")
     except subprocess.CalledProcessError as e:

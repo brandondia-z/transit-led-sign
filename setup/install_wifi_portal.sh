@@ -19,5 +19,5 @@ sudo systemctl enable wmata-wifi-manager.service
 
 echo "Done! The captive hotspot is now installed."
 echo "If your Pi ever boots up and cannot connect to a known Wi-Fi network,"
-echo "it will broadcast a hotspot named 'WMATA-Sign-Setup'."
-echo "Connect to it, then open http://10.42.0.1 in your browser."
+echo "it will broadcast an open hotspot named 'LED-Sign-Setup'."
+echo "Connect to it, then open http://led-sign.local/wifi in your browser."

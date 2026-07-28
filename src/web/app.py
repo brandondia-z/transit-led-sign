@@ -94,7 +94,7 @@ def create_app(state: StateManager):
             output = subprocess.check_output(["nmcli", "-t", "-f", "SSID", "dev", "wifi", "list"]).decode("utf-8")
             ssids = list(set([line.strip() for line in output.split('\n') if line.strip()]))
             # Remove empty ssids or the hotspot itself
-            ssids = [s for s in ssids if s and s != "WMATA-Sign-Setup"]
+            ssids = [s for s in ssids if s and s != "LED-Sign-Setup"]
             return jsonify(ssids)
         except Exception as e:
             return jsonify([])
@@ -107,10 +107,17 @@ def create_app(state: StateManager):
         password = data.get("password")
         
         try:
-            # We must use Popen to not block the response while network drops
-            cmd = f"sudo nmcli device wifi connect '{ssid}' password '{password}'"
-            subprocess.Popen(cmd, shell=True)
-            return jsonify({"status": "connecting"})
+            # We use run() instead of Popen so we can catch errors (like wrong password).
+            # If successful, the hotspot drops and this request will likely never reach the client,
+            # which the client will interpret as success!
+            cmd = ["sudo", "nmcli", "device", "wifi", "connect", ssid, "password", password]
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            
+            if result.returncode != 0:
+                # nmcli failed (e.g. wrong password or out of range)
+                return jsonify({"error": "Incorrect password or network out of range."}), 400
+                
+            return jsonify({"status": "success"})
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
