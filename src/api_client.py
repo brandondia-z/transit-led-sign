@@ -8,6 +8,11 @@ from src.models import TrainPrediction, Alert
 class WMATAClient:
     API_BASE = "https://api.wmata.com"
     
+    DESTINATION_MAP = {
+        "New Crlton": "N Carrollton",
+        # Add more physical sign abbreviation mappings here as needed
+    }
+    
     def __init__(self, state: StateManager):
         self.state = state
         self.session = requests.Session()
@@ -70,9 +75,12 @@ class WMATAClient:
             if t.get("Line") == "No" or t.get("Destination") == "Train":
                 continue
                 
+            raw_dest = t.get("Destination", "")
+            mapped_dest = self.DESTINATION_MAP.get(raw_dest, raw_dest)
+            
             predictions.append(TrainPrediction(
                 line=t.get("Line", ""),
-                destination=t.get("Destination", ""),
+                destination=mapped_dest,
                 destination_full=t.get("DestinationName", ""),
                 minutes=t.get("Min", ""),
                 car_count=t.get("Car", ""),
