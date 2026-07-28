@@ -19,8 +19,11 @@ from src.state import StateManager
 from src.renderer import Renderer
 from src.display_modes import compact
 from src.models import TrainPrediction
+from src.utils import check_and_stop_service, restart_service
 
 def main():
+    service_was_stopped = check_and_stop_service()
+    
     print("\nStarting UI Color Test on LED Matrix...")
     print("Press Ctrl+C to exit.")
     
@@ -71,6 +74,8 @@ def main():
     def signal_handler(sig, frame):
         renderer.clear()
         print("\nTest stopped.")
+        if service_was_stopped:
+            restart_service()
         sys.exit(0)
         
     signal.signal(signal.SIGINT, signal_handler)
