@@ -65,6 +65,9 @@ def start_hotspot():
             "--no-daemon", 
             "--interface=wlan0", 
             "--dhcp-range=10.42.0.10,10.42.0.250,12h", 
+            "--dhcp-option=3,10.42.0.1", # Default Gateway
+            "--dhcp-option=6,10.42.0.1", # DNS Server
+            "--dhcp-option=114,http://10.42.0.1/wifi", # RFC 8910 Captive Portal API
             "--address=/#/10.42.0.1"
         ])
         
