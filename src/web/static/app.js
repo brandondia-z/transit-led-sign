@@ -50,8 +50,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             selectLine('SV'); // Default fallback
         }
         
-        }
-        
         updateDirectionUI(selectedDirection);
         updateModeUI(selectedMode);
 
