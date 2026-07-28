@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMATA Sign Settings</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Station Accordion Header -->
+        <div class="accordion-header">
+            <span>STATION</span>
+            <span class="chevron">▲</span>
+        </div>
+
+        <div class="accordion-content">
+            <!-- Transit Agency -->
+            <div class="form-group">
+                <label>TRANSIT AGENCY</label>
+                <div class="custom-select">
+                    <select id="agencySelect" disabled>
+                        <option value="WMATA">WMATA</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Line Selector -->
+            <div class="line-selector" id="lineSelector">
+                <button class="line-btn" data-line="BL" style="background-color: #1574C4;">B</button>
+                <button class="line-btn" data-line="GR" style="background-color: #0FAB4B;">G</button>
+                <button class="line-btn" data-line="OR" style="background-color: #F68712;">O</button>
+                <button class="line-btn" data-line="RD" style="background-color: #E51636;">R</button>
+                <button class="line-btn" data-line="SV" style="background-color: #A2AAAD;">S</button>
+                <button class="line-btn" data-line="YL" style="background-color: #FCD006; color: #000;">Y</button>
+            </div>
+
+            <!-- Station -->
+            <div class="form-group">
+                <label>STATION</label>
+                <div class="custom-select">
+                    <select id="stationSelect" disabled>
+                        <option value="">Select a Line first...</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Toward -->
+            <div class="form-group">
+                <label>TOWARD</label>
+                <div class="segmented-control" id="directionSelector">
+                    <button class="segment active" data-direction="all">Both</button>
+                    <button class="segment" data-direction="1" id="dir1Btn">Direction 1</button>
+                    <button class="segment" data-direction="2" id="dir2Btn">Direction 2</button>
+                </div>
+            </div>
+            
+            <div class="toast" id="toast">Settings Saved!</div>
+
+            <!-- Save Button -->
+            <button class="save-btn" id="saveBtn">Save Settings</button>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

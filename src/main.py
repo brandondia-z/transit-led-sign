@@ -23,6 +23,14 @@ class MainEngine:
         # Start API polling in background
         self.api_client.start()
         
+        # Start Web UI in background
+        from src.web.app import create_app
+        from threading import Thread
+        self.web_app = create_app(self.state)
+        self.web_thread = Thread(target=self.web_app.run, kwargs={"host": "0.0.0.0", "port": 8080, "use_reloader": False}, daemon=True)
+        self.web_thread.start()
+        logging.info("Web UI started on port 8080")
+        
         # Main render loop
         try:
             while self.running:
