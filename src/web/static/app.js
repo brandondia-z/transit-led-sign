@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         selectedMode = currentConfig.display_mode || 'transit';
         
         // Setup Canvas Data if available
-        if (currentConfig.canvas_data && currentConfig.canvas_data.length === 2048) {
+        if (currentConfig.canvas_data && currentConfig.canvas_data.length === 4096) {
             canvasData = currentConfig.canvas_data;
             renderCanvasFromData();
         }
@@ -234,16 +234,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const ctx = ledCanvas.getContext('2d');
     let isDrawing = false;
     let currentColor = '#E51636';
-    let canvasData = new Array(64 * 32).fill('#000000');
+    let canvasData = new Array(128 * 32).fill('#000000');
 
     // Initialize canvas to black visually
     ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, 64, 32);
+    ctx.fillRect(0, 0, 128, 32);
 
     function renderCanvasFromData() {
         for (let y = 0; y < 32; y++) {
-            for (let x = 0; x < 64; x++) {
-                ctx.fillStyle = canvasData[y * 64 + x] || '#000000';
+            for (let x = 0; x < 128; x++) {
+                ctx.fillStyle = canvasData[y * 128 + x] || '#000000';
                 ctx.fillRect(x, y, 1, 1);
             }
         }
@@ -270,12 +270,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function drawPixel(e) {
         const { x, y } = getMousePos(e);
-        if (x >= 0 && x < 64 && y >= 0 && y < 32) {
+        if (x >= 0 && x < 128 && y >= 0 && y < 32) {
             // Update visual canvas
             ctx.fillStyle = currentColor;
             ctx.fillRect(x, y, 1, 1);
             // Update data model
-            canvasData[y * 64 + x] = currentColor;
+            canvasData[y * 128 + x] = currentColor;
         }
     }
 
@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     clearCanvasBtn.addEventListener('click', () => {
         canvasData.fill('#000000');
         ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, 64, 32);
+        ctx.fillRect(0, 0, 128, 32);
     });
 
     sendCanvasBtn.addEventListener('click', async () => {
