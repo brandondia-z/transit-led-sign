@@ -38,6 +38,7 @@ class Renderer:
             print("WARNING: rgbmatrix not found. Running in mock mode.")
 
         # Load Fonts
+        self.font_5x7 = self._load_font("5x7.bdf")
         self.font_5x8 = self._load_font("5x8.bdf")
         self.font_6x10 = self._load_font("6x10.bdf")
         self.font_4x6 = self._load_font("4x6.bdf")
