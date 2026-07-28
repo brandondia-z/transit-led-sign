@@ -22,7 +22,9 @@ WHITE = (255, 255, 255)
 DARK_GRAY = (40, 40, 40)
 BLACK = (0, 0, 0)
 RED = (180, 0, 0) # Dimmer red for headers to distinguish from the brighter Red Line color
-GREEN = (0, 255, 0)
+GREEN = (150, 255, 50) # Softer, yellowish lime-green (less Luigi)
+CYAN = (0, 255, 255)
+MAGENTA = (255, 0, 255)
 
 # Paths
 FONTS_DIR = "/home/brandondiaz/rpi-rgb-led-matrix/fonts"
