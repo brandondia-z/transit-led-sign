@@ -99,26 +99,39 @@ def create_app(state: StateManager):
         except Exception as e:
             return jsonify([])
 
+    last_wifi_error = None
+
+    @app.route("/api/wifi/status", methods=["GET"])
+    def wifi_status():
+        nonlocal last_wifi_error
+        if last_wifi_error:
+            err = last_wifi_error
+            last_wifi_error = None
+            return jsonify({"status": "failed", "error": err})
+        return jsonify({"status": "waiting"})
+
     @app.route("/api/wifi/connect", methods=["POST"])
     def connect_wifi():
+        nonlocal last_wifi_error
         import subprocess
+        import threading
+        import time
+        
         data = request.json
         ssid = data.get("ssid")
         password = data.get("password")
         
-        try:
-            # We use run() instead of Popen so we can catch errors (like wrong password).
-            # If successful, the hotspot drops and this request will likely never reach the client,
-            # which the client will interpret as success!
+        last_wifi_error = None
+        
+        def attempt_connection():
+            nonlocal last_wifi_error
+            time.sleep(1) # Allow the HTTP response to reach the phone first
             cmd = ["sudo", "nmcli", "device", "wifi", "connect", ssid, "password", password]
             result = subprocess.run(cmd, capture_output=True, text=True)
-            
             if result.returncode != 0:
-                # nmcli failed (e.g. wrong password or out of range)
-                return jsonify({"error": "Incorrect password or network out of range."}), 400
+                last_wifi_error = "Incorrect password or network out of range."
                 
-            return jsonify({"status": "success"})
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+        threading.Thread(target=attempt_connection).start()
+        return jsonify({"status": "testing"})
 
     return app

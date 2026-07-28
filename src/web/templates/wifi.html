@@ -148,26 +148,42 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ssid: selectedSsid, password: password })
-            }).then(res => {
-                if (!res.ok) {
-                    return res.json().then(data => { throw new Error(data.error); });
-                }
-                return res.json();
-            }).then(data => {
-                // If we get here, it succeeded but the network didn't drop fast enough to cause a timeout
-                showSuccess();
+            }).then(res => res.json()).then(data => {
+                // Connection attempt started. Start polling.
+                connectBtn.textContent = 'Verifying... (this may take 30s)';
+                let attempts = 0;
+                
+                const poll = setInterval(() => {
+                    attempts++;
+                    if (attempts > 10) {
+                        // 30 seconds passed with no response. The hotspot is gone. Success!
+                        clearInterval(poll);
+                        showSuccess();
+                        return;
+                    }
+                    
+                    fetch('/api/wifi/status')
+                        .then(res => res.json())
+                        .then(statusData => {
+                            if (statusData.status === 'failed') {
+                                clearInterval(poll);
+                                errorMsg.textContent = statusData.error;
+                                errorMsg.style.display = 'block';
+                                connectBtn.textContent = 'Try Again';
+                                connectBtn.style.backgroundColor = '#E51636';
+                                connectBtn.disabled = false;
+                            }
+                        }).catch(e => {
+                            // Timeout / network error during polling is expected!
+                            // It means the hotspot dropped. We just keep polling until attempts > 10
+                        });
+                }, 3000);
             }).catch(err => {
-                // A TypeError or network error usually means the hotspot dropped (which means success!)
-                if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-                    showSuccess();
-                } else {
-                    // Actual API error (e.g. 400 Incorrect Password)
-                    errorMsg.textContent = err.message || "Incorrect password or network out of range.";
-                    errorMsg.style.display = 'block';
-                    connectBtn.textContent = 'Try Again';
-                    connectBtn.style.backgroundColor = '#E51636'; // Red
-                    connectBtn.disabled = false;
-                }
+                // Only triggers if the initial POST fails immediately
+                errorMsg.textContent = "Failed to start connection.";
+                errorMsg.style.display = 'block';
+                connectBtn.textContent = 'Try Again';
+                connectBtn.disabled = false;
             });
         };
         
