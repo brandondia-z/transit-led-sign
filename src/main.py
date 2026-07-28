@@ -45,6 +45,9 @@ class MainEngine:
                 
                 if mode == "transit":
                     compact.render(self.renderer, state_snapshot)
+                elif mode == "canvas":
+                    from src.display_modes import canvas
+                    canvas.render(self.renderer, state_snapshot)
                 else:
                     # Fallback if unknown mode
                     self.renderer.clear()

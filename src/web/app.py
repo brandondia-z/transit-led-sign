@@ -39,6 +39,13 @@ def create_app(state: StateManager):
         )
         return jsonify({"status": "success"})
         
+    @app.route("/api/canvas", methods=["POST"])
+    def update_canvas():
+        data = request.json
+        if "canvas_data" in data:
+            state.update_config(canvas_data=data["canvas_data"])
+        return jsonify({"status": "success"})
+        
     @app.route("/api/stations", methods=["GET"])
     def get_stations():
         nonlocal stations_cache

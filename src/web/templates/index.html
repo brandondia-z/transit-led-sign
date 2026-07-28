@@ -18,7 +18,17 @@
         <div class="accordion-content">
 
 
-            <!-- Line Selector -->
+            <!-- Mode Selector -->
+            <div class="form-group">
+                <div class="segmented-control" id="modeSelector" style="margin-bottom: 20px;">
+                    <button class="segment active" data-mode="transit">Transit Mode</button>
+                    <button class="segment" data-mode="canvas">Canvas Mode</button>
+                </div>
+            </div>
+
+            <!-- TRANSIT MODE CONTENT -->
+            <div id="transitSection">
+                <!-- Line Selector -->
             <div class="line-selector" id="lineSelector">
                 <button class="line-btn" data-line="BL" style="background-color: #1574C4;">B</button>
                 <button class="line-btn" data-line="GR" style="background-color: #0FAB4B;">G</button>
@@ -58,6 +68,32 @@
                 </div>
             </div>
             
+            </div> <!-- End Transit Section -->
+
+            <!-- CANVAS MODE CONTENT -->
+            <div id="canvasSection" style="display: none;">
+                <div class="canvas-container" style="text-align: center; margin-bottom: 15px;">
+                    <canvas id="ledCanvas" width="64" height="32" style="width: 100%; aspect-ratio: 2/1; image-rendering: pixelated; border: 1px solid #333; touch-action: none; background: #000;"></canvas>
+                </div>
+                
+                <div class="color-palette" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                    <button class="color-btn" style="background: #E51636;" data-color="#E51636"></button>
+                    <button class="color-btn" style="background: #F68712;" data-color="#F68712"></button>
+                    <button class="color-btn" style="background: #FCD006;" data-color="#FCD006"></button>
+                    <button class="color-btn" style="background: #0FAB4B;" data-color="#0FAB4B"></button>
+                    <button class="color-btn" style="background: #1574C4;" data-color="#1574C4"></button>
+                    <button class="color-btn" style="background: #A2AAAD;" data-color="#A2AAAD"></button>
+                    <button class="color-btn" style="background: #FFFFFF;" data-color="#FFFFFF"></button>
+                    <input type="color" id="customColorPicker" value="#00FFFF" style="width: 32px; height: 32px; padding: 0; border: none; border-radius: 50%; cursor: pointer;">
+                    <button class="color-btn" style="background: #000000; border: 1px solid #666; color: white; font-size: 10px;" data-color="#000000">ERA</button>
+                </div>
+                
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button id="clearCanvasBtn" style="padding: 10px 20px; background: #333; color: white; border: none; border-radius: 8px;">Clear</button>
+                    <button id="sendCanvasBtn" style="padding: 10px 20px; background: #1574C4; color: white; border: none; border-radius: 8px; font-weight: 600;">Send to Sign</button>
+                </div>
+            </div>
+
             <div class="toast" id="toast">Settings Saved!</div>
 
             <!-- Save Button -->

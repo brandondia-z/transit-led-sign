@@ -105,3 +105,8 @@ class Renderer:
         # Simple filled rect using DrawLine
         for i in range(h):
             graphics.DrawLine(self.canvas, x, y+i, x+w-1, y+i, c)
+            
+    def set_pixel(self, x, y, r, g, b):
+        if not self.canvas:
+            return
+        self.canvas.SetPixel(x, y, r, g, b)

@@ -16,6 +16,7 @@ class Config:
     gpio_mapping: str
     gpio_slowdown: int
     scroll_speed_ms: int
+    canvas_data: list
 
     def save_to_json(self):
         # We only save user-configurable settings, not secrets like api key
@@ -23,7 +24,8 @@ class Config:
             "station_codes": self.station_codes,
             "direction_group": self.direction_group,
             "display_mode": self.display_mode,
-            "brightness": self.brightness
+            "brightness": self.brightness,
+            "canvas_data": self.canvas_data
         }
         with open(CONFIG_FILE, "w") as f:
             json.dump(data, f, indent=4)
@@ -56,5 +58,6 @@ def load_config() -> Config:
         brightness=int(json_data.get("brightness", os.getenv("BRIGHTNESS", "60"))),
         gpio_mapping=os.getenv("GPIO_MAPPING", "regular"),
         gpio_slowdown=int(os.getenv("GPIO_SLOWDOWN", "1")),
-        scroll_speed_ms=int(os.getenv("SCROLL_SPEED_MS", "30"))
+        scroll_speed_ms=int(os.getenv("SCROLL_SPEED_MS", "30")),
+        canvas_data=json_data.get("canvas_data", [])
     )
