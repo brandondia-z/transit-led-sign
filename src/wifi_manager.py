@@ -15,13 +15,33 @@ def check_internet():
 def start_hotspot():
     logging.info("Starting LED-Sign-Setup hotspot...")
     try:
-        # nmcli automatically handles dhcp and dnsmasq for shared hotspots
+        # Delete any existing profile to start fresh
+        subprocess.run(["nmcli", "con", "delete", "LED-Sign-Setup"], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+        
+        # Create an open AP profile
         subprocess.run([
-            "nmcli", "device", "wifi", "hotspot", 
+            "nmcli", "con", "add", 
+            "type", "wifi", 
             "ifname", "wlan0", 
+            "con-name", "LED-Sign-Setup", 
             "ssid", "LED-Sign-Setup"
+        ], check=True, stdout=subprocess.DEVNULL)
+        
+        subprocess.run([
+            "nmcli", "con", "modify", "LED-Sign-Setup", 
+            "802-11-wireless.mode", "ap", 
+            "ipv4.method", "shared"
         ], check=True)
-        logging.info("Hotspot started successfully!")
+        
+        # Explicitly remove security just in case NetworkManager defaults to WEP/WPA
+        subprocess.run([
+            "nmcli", "con", "modify", "LED-Sign-Setup", "remove", "wifi-sec"
+        ], stderr=subprocess.DEVNULL)
+        
+        # Bring the hotspot up
+        subprocess.run(["nmcli", "con", "up", "LED-Sign-Setup"], check=True)
+        
+        logging.info("Hotspot started successfully as an OPEN network!")
     except subprocess.CalledProcessError as e:
         logging.error(f"Failed to start hotspot: {e}")
 
