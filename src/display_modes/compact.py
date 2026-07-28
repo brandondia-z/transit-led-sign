@@ -44,18 +44,20 @@ def render(renderer, state_dict):
             line_str = p.line if p.line else "--"
             renderer.draw_text(font, 0, y, color_key, line_str)
             
-            # Car count
+            # Car count (8-car trains are GREEN, others are WHITE)
             car_str = str(p.car_count) if p.car_count else "-"
-            renderer.draw_text(font, 18, y, "AMBER", car_str)
-            
-            # Destination (up to 14 chars to avoid hitting MIN)
-            dest = p.destination[:14] if p.destination else "Unknown"
-            renderer.draw_text(font, 36, y, "AMBER", dest)
+            car_color = "GREEN" if car_str == "8" else "WHITE"
+            renderer.draw_text(font, 18, y, car_color, car_str)
             
             # Minutes / Status (solid, no flashing)
             min_str = p.minutes if p.minutes else "---"
-            
-            # Draw right-aligned minutes
             m_width = renderer.draw_text(font, 0, -20, "WHITE", min_str)
             m_width = m_width if m_width > 0 else len(min_str) * 6
+            
+            # Destination (dynamically truncate to avoid hitting MIN)
+            max_dest_pixels = (128 - m_width - 4) - 36 # 4 pixels of padding
+            max_chars = max(0, max_dest_pixels // 6)
+            dest = p.destination[:max_chars] if p.destination else "Unknown"
+            
+            renderer.draw_text(font, 36, y, "WHITE", dest)
             renderer.draw_text(font, 128 - m_width, y, "WHITE", min_str)
