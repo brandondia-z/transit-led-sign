@@ -12,7 +12,7 @@ LINE_COLORS = {
     "GR": (15, 171, 75),
     "YL": (252, 208, 6),
     "SV": (162, 170, 173),
-    "No": (40, 40, 40) # Used for non-revenue trains
+    "No": (128, 128, 128) # Used for non-revenue trains
 }
 
 # Typography Colors
