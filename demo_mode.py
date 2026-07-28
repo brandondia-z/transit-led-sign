@@ -1,13 +1,43 @@
 import time
 import signal
 import sys
+import subprocess
 from src.state import StateManager
 from src.renderer import Renderer
 from src.display_modes import compact
 from src.models import TrainPrediction
 
+def check_and_stop_service():
+    try:
+        # Check if the service is active
+        result = subprocess.run(['systemctl', 'is-active', '--quiet', 'wmata-sign.service'])
+        if result.returncode == 0:
+            print("WARNING: The wmata-sign.service is currently running in the background!")
+            print("Running the demo at the same time will cause hardware conflicts and crash the LED matrix.")
+            resp = input("Do you want to stop the service now? [Y/n]: ").strip().lower()
+            if resp == '' or resp == 'y':
+                print("Stopping wmata-sign.service...")
+                subprocess.run(['sudo', 'systemctl', 'stop', 'wmata-sign.service'], check=True)
+                print("Service stopped.")
+                return True
+            else:
+                print("Cannot safely run demo while service is active. Exiting.")
+                sys.exit(1)
+    except Exception as e:
+        print(f"Notice: Could not check systemd service status: {e}")
+    return False
+
+def restart_service():
+    resp = input("\nDo you want to restart the background WMATA sign service? [Y/n]: ").strip().lower()
+    if resp == '' or resp == 'y':
+        print("Starting wmata-sign.service...")
+        subprocess.run(['sudo', 'systemctl', 'start', 'wmata-sign.service'])
+        print("Service started!")
+
 def main():
-    print("Starting WMATA Demo Mode...")
+    service_was_stopped = check_and_stop_service()
+    
+    print("\nStarting WMATA Demo Mode...")
     print("Press Ctrl+C to exit.")
     
     state = StateManager()
@@ -50,6 +80,8 @@ def main():
     def signal_handler(sig, frame):
         renderer.clear()
         print("\nDemo stopped.")
+        if service_was_stopped:
+            restart_service()
         sys.exit(0)
         
     signal.signal(signal.SIGINT, signal_handler)
