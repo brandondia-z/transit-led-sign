@@ -39,12 +39,14 @@ def start_hotspot():
         ], check=True, stdout=subprocess.DEVNULL)
         
         # Use manual IPv4 to prevent NetworkManager from locking down DNS
+        # Explicitly disable IPv6 so iOS doesn't bypass our IPv4 dnsmasq interceptor
         subprocess.run([
             "nmcli", "con", "modify", "LED-Sign-Setup", 
             "802-11-wireless.mode", "ap", 
             "ipv4.method", "manual",
             "ipv4.addresses", "10.42.0.1/24",
-            "ipv4.gateway", "10.42.0.1"
+            "ipv4.gateway", "10.42.0.1",
+            "ipv6.method", "disabled"
         ], check=True)
         
         # Explicitly remove security just in case NetworkManager defaults to WEP/WPA
