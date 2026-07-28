@@ -88,11 +88,15 @@ def main():
     signal.signal(signal.SIGINT, signal_handler)
     
     print("\nStarting ramp up... monitoring hardware voltage...")
-    matrix.Fill(255, 255, 255)  # Pure White
+    
+    # We must use a canvas and swap it to force the hardware to apply the new PWM brightness
+    canvas = matrix.CreateFrameCanvas()
     
     max_safe = 100
     for b in range(10, 101, 2):  # Go from 10 to 100 in steps of 2
         matrix.brightness = b
+        canvas.Fill(255, 255, 255)
+        canvas = matrix.SwapOnVSync(canvas)
         print(f"Testing brightness: {b}%...")
         
         # Hold for 1 second at this brightness to let voltage settle and measure
