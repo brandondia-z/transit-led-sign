@@ -27,15 +27,19 @@ def start_hotspot():
         logging.error(f"Failed to start hotspot: {e}")
 
 def main():
-    # Wait a bit after boot for NetworkManager to try connecting to known networks
-    logging.info("Waiting 30 seconds for normal wifi connection...")
-    time.sleep(30)
+    # Wait a short bit after boot for NetworkManager to try connecting
+    logging.info("Waiting 10 seconds for normal wifi connection...")
+    time.sleep(10)
     
-    if not check_internet():
-        logging.info("No internet detected! Launching hotspot.")
-        start_hotspot()
-    else:
-        logging.info("Internet connection is active. WiFi Manager exiting.")
+    while True:
+        if not check_internet():
+            logging.info("No internet detected! Launching hotspot.")
+            start_hotspot()
+            # Sleep for a long time after starting the hotspot so we don't spam it
+            time.sleep(600)
+        else:
+            # Check every 10 seconds
+            time.sleep(10)
 
 if __name__ == "__main__":
     main()
