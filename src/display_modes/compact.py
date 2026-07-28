@@ -10,13 +10,13 @@ def render(renderer, state_dict):
     renderer.clear()
     
     # 1. Draw Header (Red)
-    # y=6 using font_6x10 (Cap height 7) occupies pixels 0-6 (0 top padding)
+    # y=6 using font_wmata_5x7 (Cap height 7, Ascent 7, Descent 0) uses pixels 0-6
     header_y = 6
-    font = renderer.font_6x10
+    font = renderer.font_wmata_5x7
     
     renderer.draw_text(font, 0, header_y, "RED", "LN")
-    renderer.draw_text(font, 19, header_y, "RED", "CAR")
-    renderer.draw_text(font, 38, header_y, "RED", "DEST")
+    renderer.draw_text(font, 15, header_y, "RED", "CAR")
+    renderer.draw_text(font, 36, header_y, "RED", "DEST")
     
     # Right align "MIN"
     min_width = renderer.draw_text(font, 0, -20, "RED", "MIN") # measure off-screen
@@ -24,11 +24,11 @@ def render(renderer, state_dict):
     renderer.draw_text(font, 128 - min_width, header_y, "RED", "MIN")
     
     if api_error:
-        renderer.draw_text(font, 38, 14, "AMBER", "API Error")
+        renderer.draw_text(font, 36, 14, "AMBER", "API Error")
         return
         
     if not predictions:
-        renderer.draw_text(font, 38, 14, "AMBER", "No Data")
+        renderer.draw_text(font, 36, 14, "AMBER", "No Data")
         return
 
     # Draw up to 3 trains
@@ -46,11 +46,11 @@ def render(renderer, state_dict):
             
             # Car count
             car_str = str(p.car_count) if p.car_count else "-"
-            renderer.draw_text(font, 22, y, "AMBER", car_str)
+            renderer.draw_text(font, 18, y, "AMBER", car_str)
             
             # Destination (up to 14 chars to avoid hitting MIN)
             dest = p.destination[:14] if p.destination else "Unknown"
-            renderer.draw_text(font, 38, y, "AMBER", dest)
+            renderer.draw_text(font, 36, y, "AMBER", dest)
             
             # Minutes / Status (solid, no flashing)
             min_str = p.minutes if p.minutes else "---"

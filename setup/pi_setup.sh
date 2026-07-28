@@ -26,17 +26,20 @@ fi
 cd rpi-rgb-led-matrix
 # Build the main C++ library
 make
-# Build and install the Python bindings
-cd bindings/python
-make build-python PYTHON=$(which python3)
-sudo make install-python PYTHON=$(which python3)
-
 echo "=== Setting up Python Virtual Environment ==="
 cd ~
 if [ ! -d "wmata_env" ]; then
-    # Must use --system-site-packages so it sees the globally installed rgbmatrix module
+    # Must use --system-site-packages so it sees globally installed modules if needed
     python3 -m venv --system-site-packages wmata_env
 fi
+
+echo "=== Installing Python Bindings ==="
+# The new build system requires running pip install from the root of the repository
+cd ~/rpi-rgb-led-matrix
+# Ensure cmake is installed as it's required by the new build system
+sudo apt-get install -y cmake
+# Install the rgbmatrix bindings into our venv
+~/wmata_env/bin/python -m pip install .
 
 echo "=== Installing Python Packages ==="
 ~/wmata_env/bin/python -m pip install requests python-dotenv flask

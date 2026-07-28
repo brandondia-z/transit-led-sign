@@ -12,7 +12,7 @@ except ImportError:
             def __init__(self): self.height = 0
             def LoadFont(self, path): pass
 
-from src.constants import FONTS_DIR, LINE_COLORS, AMBER, WHITE, DARK_GRAY, BLACK, RED
+from src.constants import FONTS_DIR, CUSTOM_FONTS_DIR, LINE_COLORS, AMBER, WHITE, DARK_GRAY, BLACK, RED
 
 class Renderer:
     def __init__(self, config):
@@ -38,6 +38,7 @@ class Renderer:
             print("WARNING: rgbmatrix not found. Running in mock mode.")
 
         # Load Fonts
+        self.font_wmata_5x7 = self._load_custom_font("wmata_5x7.bdf")
         self.font_5x7 = self._load_font("5x7.bdf")
         self.font_5x8 = self._load_font("5x8.bdf")
         self.font_6x10 = self._load_font("6x10.bdf")
@@ -58,6 +59,13 @@ class Renderer:
     def _load_font(self, filename):
         f = graphics.Font()
         path = os.path.join(FONTS_DIR, filename)
+        if os.path.exists(path):
+            f.LoadFont(path)
+        return f
+
+    def _load_custom_font(self, filename):
+        f = graphics.Font()
+        path = os.path.join(CUSTOM_FONTS_DIR, filename)
         if os.path.exists(path):
             f.LoadFont(path)
         return f

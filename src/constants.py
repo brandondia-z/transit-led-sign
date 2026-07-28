@@ -1,3 +1,5 @@
+import os
+
 # Display Constants
 DISPLAY_WIDTH = 128
 DISPLAY_HEIGHT = 32
@@ -22,3 +24,4 @@ RED = (255, 0, 0)
 
 # Paths
 FONTS_DIR = "/home/brandondiaz/rpi-rgb-led-matrix/fonts"
+CUSTOM_FONTS_DIR = os.path.join(os.path.dirname(__file__), "fonts")
